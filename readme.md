@@ -31,7 +31,7 @@ Transporte Motorizado Plus (TMPlus) es una API que permite a los usuarios alquil
 
 1. **Clonar el Repositorio**
    ```bash
-   git clone <URL_DEL_REPOSITORIO>
+   git clone https://github.com/jntellez/tmplus-api.git
    cd tmplus
    ```
 ````
