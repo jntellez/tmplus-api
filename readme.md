@@ -30,11 +30,11 @@ Transporte Motorizado Plus (TMPlus) es una API que permite a los usuarios alquil
 ## Instalación
 
 1. **Clonar el Repositorio**
+
    ```bash
    git clone https://github.com/jntellez/tmplus-api.git
    cd tmplus
    ```
-````
 
 2. **Instalar Dependencias**
 
@@ -50,7 +50,8 @@ Transporte Motorizado Plus (TMPlus) es una API que permite a los usuarios alquil
 4. **Configurar Variables de Entorno**
 
    - Crear un archivo `.env` en la raíz del proyecto y añadir las siguientes variables:
-     ```
+
+     ```env
      PORT=5000
      DB_HOST=localhost
      DB_USER=tu_usuario
@@ -59,6 +60,7 @@ Transporte Motorizado Plus (TMPlus) es una API que permite a los usuarios alquil
      ```
 
 5. **Ejecutar la Aplicación**
+
    ```bash
    npm start
    ```
@@ -174,7 +176,4 @@ Las contribuciones son bienvenidas. Si deseas contribuir, por favor sigue los si
 ## Licencia
 
 Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
-
-```
-
-```
+````
