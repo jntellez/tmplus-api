@@ -1,4 +1,3 @@
-````markdown
 # Transporte Motorizado Plus (TMPlus)
 
 Transporte Motorizado Plus (TMPlus) es una API que permite a los usuarios alquilar motos de forma sencilla y eficiente. Esta API gestiona las entidades principales, incluyendo usuarios, motos, reservas y calificaciones.
@@ -30,14 +29,12 @@ Transporte Motorizado Plus (TMPlus) es una API que permite a los usuarios alquil
 ## Instalación
 
 1. **Clonar el Repositorio**
-
    ```bash
    git clone https://github.com/jntellez/tmplus-api.git
    cd tmplus
    ```
 
 2. **Instalar Dependencias**
-
    ```bash
    npm install
    ```
@@ -45,13 +42,12 @@ Transporte Motorizado Plus (TMPlus) es una API que permite a los usuarios alquil
 3. **Configurar la Base de Datos**
 
    - Crear una base de datos en MySQL llamada `tmplus_db`.
-   - Ejecutar las consultas SQL para crear las tablas necesarias (puedes encontrar las consultas en la sección "Uso de la API").
+   - Ejecutar las consultas SQL para crear las tablas necesarias (puedes encontrarlas en la sección [Uso de la API](#uso-de-la-api)).
 
 4. **Configurar Variables de Entorno**
 
    - Crear un archivo `.env` en la raíz del proyecto y añadir las siguientes variables:
-
-     ```env
+     ```
      PORT=5000
      DB_HOST=localhost
      DB_USER=tu_usuario
@@ -60,7 +56,6 @@ Transporte Motorizado Plus (TMPlus) es una API que permite a los usuarios alquil
      ```
 
 5. **Ejecutar la Aplicación**
-
    ```bash
    npm start
    ```
@@ -176,4 +171,3 @@ Las contribuciones son bienvenidas. Si deseas contribuir, por favor sigue los si
 ## Licencia
 
 Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
-````
