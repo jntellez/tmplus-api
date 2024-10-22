@@ -2,8 +2,12 @@
 const db = require("../config/db");
 
 const motorcycleModel = {
-  getAll: async () => {
-    const [rows] = await db.query("SELECT * FROM motorcycles");
+  getAll: async (page = 1, limit = 5) => {
+    const offset = (page - 1) * limit;
+    const [rows] = await db.query("SELECT * FROM motorcycles LIMIT ?, ?", [
+      offset,
+      limit,
+    ]);
     return rows;
   },
   getById: async (id) => {

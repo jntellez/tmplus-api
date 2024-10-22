@@ -5,7 +5,7 @@ const motorcycleController = require("../controllers/motorcycleController");
 const verifyToken = require("../middlewares/authMiddleware"); // Asegúrate de que el middleware de autenticación esté disponible
 
 // Rutas públicas
-router.get("/", motorcycleController.getAll); // Permitido para todos
+router.get("/", motorcycleController.getAll);
 router.get("/:id", motorcycleController.getById); // Permitido para todos
 
 // Rutas protegidas
