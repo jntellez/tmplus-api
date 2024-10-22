@@ -3,11 +3,15 @@ const motorcycleModel = require("../models/motorcycleModel");
 
 const motorcycleController = {
   getAll: async (req, res) => {
-    const page = parseInt(req.query.page) || 1; // Obtiene el número de página de los parámetros de consulta
-    const limit = parseInt(req.query.limit) || 5; // Obtiene el límite de resultados de los parámetros de consulta
+    const page = parseInt(req.query.page) || 1; // Obtiene el número de página de la consulta
+    const limit = parseInt(req.query.limit) || 5; // Establece un límite predeterminado
+
     try {
-      const motorcycles = await motorcycleModel.getAll(page, limit); // Pasa los parámetros a la función del modelo
-      res.json(motorcycles);
+      const { motorcycles, totalPages } = await motorcycleModel.getAll(
+        page,
+        limit
+      );
+      res.json({ motorcycles, totalPages }); // Devuelve motocicletas y total de páginas
     } catch (err) {
       res
         .status(500)

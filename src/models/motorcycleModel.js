@@ -4,17 +4,22 @@ const db = require("../config/db");
 const motorcycleModel = {
   getAll: async (page = 1, limit = 5) => {
     const offset = (page - 1) * limit;
+
+    // Obtener las motocicletas
     const [rows] = await db.query("SELECT * FROM motorcycles LIMIT ?, ?", [
       offset,
       limit,
     ]);
-    return rows;
-  },
-  getById: async (id) => {
-    const [rows] = await db.query("SELECT * FROM motorcycles WHERE id = ?", [
-      id,
-    ]);
-    return rows[0];
+
+    // Obtener el total de motocicletas para calcular el número total de páginas
+    const [[{ total }]] = await db.query(
+      "SELECT COUNT(*) AS total FROM motorcycles"
+    );
+
+    return {
+      motorcycles: rows,
+      totalPages: Math.ceil(total / limit), // Calcula el número total de páginas
+    };
   },
   create: async (motorcycle) => {
     const [result] = await db.query(
