@@ -21,6 +21,12 @@ const motorcycleModel = {
       totalPages: Math.ceil(total / limit), // Calcula el número total de páginas
     };
   },
+  getById: async (id) => {
+    const [rows] = await db.query("SELECT * FROM motorcycles WHERE id = ?", [
+      id,
+    ]);
+    return rows[0]; // Retorna el primer elemento (la moto)
+  },
   create: async (motorcycle) => {
     const [result] = await db.query(
       "INSERT INTO motorcycles SET ?",
