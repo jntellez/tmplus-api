@@ -2,8 +2,10 @@
 const db = require("../config/db");
 
 const rentalModel = {
-  getAll: async () => {
-    const [rows] = await db.query("SELECT * FROM rentals");
+  getAllByUserId: async (id) => {
+    const [rows] = await db.query("SELECT * FROM rentals WHERE user_id = ?", [
+      id,
+    ]);
     return rows;
   },
   getById: async (id) => {

@@ -42,6 +42,10 @@ const motorcycleModel = {
     await db.query("DELETE FROM motorcycles WHERE id = ?", [id]);
     return id;
   },
+  getRentalPrice: async (id) => {
+    const [rows] = await db.query("SELECT rental_price FROM motorcycles WHERE id = ?", [id]);
+    return rows[0]?.rental_price || null; // Retorna el precio o null si no existe
+  },
 };
 
 module.exports = motorcycleModel;

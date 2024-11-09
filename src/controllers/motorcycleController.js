@@ -72,6 +72,25 @@ const motorcycleController = {
         .json({ message: "Error al eliminar la moto", error: err.message });
     }
   },
+  getRentalPrice: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const rentalPrice = await motorcycleModel.getRentalPrice(id);
+      if (rentalPrice === null) {
+        return res
+          .status(404)
+          .json({ message: "Precio de alquiler no encontrado" });
+      }
+      res.json({ rentalPrice });
+    } catch (err) {
+      res
+        .status(500)
+        .json({
+          message: "Error al obtener precio de alquiler",
+          error: err.message,
+        });
+    }
+  },
 };
 
 module.exports = motorcycleController;

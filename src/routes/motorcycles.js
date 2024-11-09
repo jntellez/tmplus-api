@@ -14,5 +14,6 @@ router.use(verifyToken); // Esto aplicará el middleware a todas las rutas sigui
 router.post("/", motorcycleController.create);
 router.put("/:id", motorcycleController.update);
 router.delete("/:id", motorcycleController.delete);
+router.get("/:id/rental-price", motorcycleController.getRentalPrice);
 
 module.exports = router;

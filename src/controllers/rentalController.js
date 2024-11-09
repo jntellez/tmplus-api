@@ -2,9 +2,10 @@
 const rentalModel = require("../models/rentalModel");
 
 const rentalController = {
-  getAll: async (req, res) => {
+  getAllByUserId: async (req, res) => {
+    const { id } = req.params;
     try {
-      const rentals = await rentalModel.getAll();
+      const rentals = await rentalModel.getAllByUserId(id);
       res.json(rentals);
     } catch (err) {
       res
@@ -47,12 +48,10 @@ const rentalController = {
       }
       res.json(rental);
     } catch (err) {
-      res
-        .status(400)
-        .json({
-          message: "Error al actualizar la reserva",
-          error: err.message,
-        });
+      res.status(400).json({
+        message: "Error al actualizar la reserva",
+        error: err.message,
+      });
     }
   },
   delete: async (req, res) => {

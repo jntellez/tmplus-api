@@ -20,8 +20,6 @@ const registerUser = async (req, res) => {
     const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
-
-    console.log("Token generado:", token); // Imprime el token generado
     res.status(201).json({ token });
   } catch (error) {
     res.status(500).json({ message: "Error en el registro", error });

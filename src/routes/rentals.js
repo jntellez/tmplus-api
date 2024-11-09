@@ -7,8 +7,8 @@ const verifyToken = require("../middlewares/authMiddleware"); // Asegúrate de t
 // Rutas protegidas
 router.use(verifyToken); // Esto aplicará el middleware a todas las rutas siguientes
 
-router.get("/", rentalController.getAll);
-router.get("/:id", rentalController.getById);
+router.get("/:id", rentalController.getAllByUserId);
+router.get("/rental/:id", rentalController.getById);
 router.post("/", rentalController.create);
 router.put("/:id", rentalController.update);
 router.delete("/:id", rentalController.delete);
