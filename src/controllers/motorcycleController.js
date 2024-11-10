@@ -1,4 +1,6 @@
 // src/controllers/motorcycleController.js
+const path = require("path");
+const fs = require("fs");
 const motorcycleModel = require("../models/motorcycleModel");
 
 const motorcycleController = {
@@ -83,12 +85,113 @@ const motorcycleController = {
       }
       res.json({ rentalPrice });
     } catch (err) {
+      res.status(500).json({
+        message: "Error al obtener precio de alquiler",
+        error: err.message,
+      });
+    }
+  },
+  // metodos para imagenes
+  addImages: async (req, res) => {
+    const { motorcycleId } = req.params;
+
+    try {
+      // Mapea las rutas de las imágenes subidas para guardarlas en la base de datos
+      const imagePaths = req.files.map((file) => `/uploads/${file.filename}`);
+
+      // Guarda las rutas en la tabla `motorcycle_images`
+      const imageRecords = imagePaths.map((imagePath) => ({
+        motorcycle_id: motorcycleId,
+        image_url: imagePath,
+      }));
+      await motorcycleModel.addImages(imageRecords);
+
+      res.status(201).json({
+        message: "Imágenes añadidas correctamente",
+        images: imagePaths,
+      });
+    } catch (err) {
       res
         .status(500)
-        .json({
-          message: "Error al obtener precio de alquiler",
-          error: err.message,
-        });
+        .json({ message: "Error al añadir imágenes", error: err.message });
+    }
+  },
+  getImages: async (req, res) => {
+    const { motorcycleId } = req.params;
+    try {
+      const images = await motorcycleModel.getImagesByMotorcycleId(
+        motorcycleId
+      );
+      if (images.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No hay imágenes para esta moto" });
+      }
+
+      // Mapea cada imagen para devolver la URL completa
+      const imagesWithUrls = images.map((image) => ({
+        ...image,
+        url: `http://localhost:5000${image.image_url}`, // Usa image.image_url directamente
+      }));
+
+      res.json(imagesWithUrls);
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error al obtener las imágenes", error: err.message });
+    }
+  },
+  deleteImage: async (req, res) => {
+    const imageId = req.params.imageId;
+
+    try {
+      const image = await motorcycleModel.getImageById(imageId);
+
+      if (!image) {
+        return res.status(404).json({ message: "Imagen no encontrada" });
+      }
+
+      const imageUrl = image.image_url;
+
+      // Ajustar la ruta para que 'uploads' esté en el mismo nivel que 'src'
+      const imagePath = path.resolve(
+        __dirname,
+        "../../uploads",
+        imageUrl.replace("/uploads/", "")
+      );
+
+      // Verificar si el archivo existe
+      if (!fs.existsSync(imagePath)) {
+        return res
+          .status(404)
+          .json({ message: "Archivo de imagen no encontrado" });
+      }
+
+      // Eliminar la imagen del sistema de archivos
+      fs.unlink(imagePath, async (err) => {
+        if (err) {
+          return res.status(500).json({
+            message: "Error al eliminar la imagen del sistema",
+            error: err.message,
+          });
+        }
+
+        // Eliminar la referencia de la imagen en la base de datos
+        const deleteResult = await motorcycleModel.deleteImage(imageId);
+        if (deleteResult) {
+          return res
+            .status(200)
+            .json({ message: "Imagen eliminada correctamente" });
+        } else {
+          return res.status(500).json({
+            message: "Error al eliminar la imagen de la base de datos",
+          });
+        }
+      });
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error al eliminar la imagen", error: err.message });
     }
   },
 };

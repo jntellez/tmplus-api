@@ -5,8 +5,8 @@ const userRoutes = require("./routes/users");
 const motorcycleRoutes = require("./routes/motorcycles");
 const rentalRoutes = require("./routes/rentals");
 const ratingRoutes = require("./routes/ratings");
-const authRoutes = require("./routes/authRoutes"); // Importar rutas de autenticación
-const verifyToken = require("./middlewares/authMiddleware"); // Importar middleware
+const authRoutes = require("./routes/authRoutes");
+const verifyToken = require("./middlewares/authMiddleware");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -15,12 +15,15 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Configura la carpeta 'uploads' para servir archivos estáticos
+app.use("/uploads", express.static("uploads"));
+
 // Usar las rutas
 app.use("/api/users", userRoutes);
 app.use("/api/motorcycles", motorcycleRoutes);
 app.use("/api/rentals", rentalRoutes);
 app.use("/api/ratings", ratingRoutes);
-app.use("/api/auth", authRoutes); // Usar rutas de autenticación
+app.use("/api/auth", authRoutes);
 
 // Ruta protegida de ejemplo
 app.get("/api/protected", verifyToken, (req, res) => {

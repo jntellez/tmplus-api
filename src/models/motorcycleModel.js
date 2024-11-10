@@ -43,8 +43,55 @@ const motorcycleModel = {
     return id;
   },
   getRentalPrice: async (id) => {
-    const [rows] = await db.query("SELECT rental_price FROM motorcycles WHERE id = ?", [id]);
+    const [rows] = await db.query(
+      "SELECT rental_price FROM motorcycles WHERE id = ?",
+      [id]
+    );
     return rows[0]?.rental_price || null; // Retorna el precio o null si no existe
+  },
+  // Metodos para las imagenes
+  addImages: async (images) => {
+    const placeholders = images.map(() => "(?, ?)").join(", ");
+    const values = images.flatMap((image) => [
+      image.motorcycle_id,
+      image.image_url,
+    ]);
+
+    await db.query(
+      `INSERT INTO motorcycle_images (motorcycle_id, image_url) VALUES ${placeholders}`,
+      values
+    );
+  },
+  getImages: async (motorcycleId) => {
+    const [rows] = await db.query(
+      "SELECT id, image_url FROM motorcycle_images WHERE motorcycle_id = ?",
+      [motorcycleId]
+    );
+    return rows; // Retorna todas las imágenes asociadas a la motocicleta
+  },
+  getImageById: async (imageId) => {
+    const [rows] = await db.query(
+      "SELECT * FROM motorcycle_images WHERE id = ?",
+      [imageId]
+    );
+    return rows[0]; // Retorna la imagen si existe
+  },
+
+  getImagesByMotorcycleId: async (motorcycleId) => {
+    try {
+      const query = "SELECT * FROM motorcycle_images WHERE motorcycle_id = ?";
+      const [rows] = await db.execute(query, [motorcycleId]);
+      return rows;
+    } catch (error) {
+      throw error;
+    }
+  },
+  deleteImage: async (imageId) => {
+    const [result] = await db.query(
+      "DELETE FROM motorcycle_images WHERE id = ?",
+      [imageId]
+    );
+    return result.affectedRows > 0; // Retorna true si se eliminó correctamente
   },
 };
 
