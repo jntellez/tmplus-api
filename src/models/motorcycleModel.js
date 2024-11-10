@@ -6,26 +6,44 @@ const motorcycleModel = {
     const offset = (page - 1) * limit;
 
     // Obtener las motocicletas
-    const [rows] = await db.query("SELECT * FROM motorcycles LIMIT ?, ?", [
-      offset,
-      limit,
-    ]);
+    const [motorcycles] = await db.query(
+      "SELECT * FROM motorcycles LIMIT ?, ?",
+      [offset, limit]
+    );
 
     // Obtener el total de motocicletas para calcular el número total de páginas
     const [[{ total }]] = await db.query(
       "SELECT COUNT(*) AS total FROM motorcycles"
     );
 
+    // Obtener las imágenes de cada motocicleta y asociarlas
+    for (let motorcycle of motorcycles) {
+      const images = await motorcycleModel.getImagesByMotorcycleId(
+        motorcycle.id
+      );
+      motorcycle.images = images.map((image) => image.image_url); // Agregar las imágenes al objeto motocicleta
+    }
+
     return {
-      motorcycles: rows,
+      motorcycles, // Las motocicletas incluyen el ID y las imágenes
       totalPages: Math.ceil(total / limit), // Calcula el número total de páginas
     };
   },
+
   getById: async (id) => {
-    const [rows] = await db.query("SELECT * FROM motorcycles WHERE id = ?", [
-      id,
-    ]);
-    return rows[0]; // Retorna el primer elemento (la moto)
+    const [motorcycles] = await db.query(
+      "SELECT * FROM motorcycles WHERE id = ?",
+      [id]
+    );
+    if (motorcycles.length > 0) {
+      const motorcycle = motorcycles[0];
+      const images = await motorcycleModel.getImagesByMotorcycleId(
+        motorcycle.id
+      );
+      motorcycle.images = images.map((image) => image.image_url); // Agregar imágenes
+      return motorcycle;
+    }
+    return null;
   },
   create: async (motorcycle) => {
     const [result] = await db.query(
@@ -76,7 +94,6 @@ const motorcycleModel = {
     );
     return rows[0]; // Retorna la imagen si existe
   },
-
   getImagesByMotorcycleId: async (motorcycleId) => {
     try {
       const query = "SELECT * FROM motorcycle_images WHERE motorcycle_id = ?";
@@ -91,7 +108,7 @@ const motorcycleModel = {
       "DELETE FROM motorcycle_images WHERE id = ?",
       [imageId]
     );
-    return result.affectedRows > 0; // Retorna true si se eliminó correctamente
+    return result.affectedRows > 0; // Retorna true si la imagen fue eliminada correctamente
   },
 };
 

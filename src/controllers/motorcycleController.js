@@ -96,6 +96,11 @@ const motorcycleController = {
     const { motorcycleId } = req.params;
 
     try {
+      // Asegúrate de que las imágenes están presentes en la solicitud
+      if (!req.files || req.files.length === 0) {
+        return res.status(400).json({ message: "No se han subido imágenes" });
+      }
+
       // Mapea las rutas de las imágenes subidas para guardarlas en la base de datos
       const imagePaths = req.files.map((file) => `/uploads/${file.filename}`);
 
@@ -104,6 +109,7 @@ const motorcycleController = {
         motorcycle_id: motorcycleId,
         image_url: imagePath,
       }));
+
       await motorcycleModel.addImages(imageRecords);
 
       res.status(201).json({
@@ -152,8 +158,6 @@ const motorcycleController = {
       }
 
       const imageUrl = image.image_url;
-
-      // Ajustar la ruta para que 'uploads' esté en el mismo nivel que 'src'
       const imagePath = path.resolve(
         __dirname,
         "../../uploads",
@@ -183,9 +187,11 @@ const motorcycleController = {
             .status(200)
             .json({ message: "Imagen eliminada correctamente" });
         } else {
-          return res.status(500).json({
-            message: "Error al eliminar la imagen de la base de datos",
-          });
+          return res
+            .status(500)
+            .json({
+              message: "Error al eliminar la imagen de la base de datos",
+            });
         }
       });
     } catch (err) {
