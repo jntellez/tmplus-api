@@ -1,4 +1,3 @@
-// src/controllers/rentalController.js
 const rentalModel = require("../models/rentalModel");
 
 const rentalController = {
@@ -11,6 +10,20 @@ const rentalController = {
       res
         .status(500)
         .json({ message: "Error al obtener reservas", error: err.message });
+    }
+  },
+  getAllByMotorcycleId: async (req, res) => {
+    const { motorcycleId } = req.params;
+    try {
+      const rentals = await rentalModel.getAllByMotorcycleId(motorcycleId);
+      res.json(rentals);
+    } catch (err) {
+      res
+        .status(500)
+        .json({
+          message: "Error al obtener reservas por motocicleta",
+          error: err.message,
+        });
     }
   },
   getById: async (req, res) => {

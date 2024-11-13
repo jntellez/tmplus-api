@@ -1,4 +1,3 @@
-// src/routes/rentals.js
 const express = require("express");
 const router = express.Router();
 const rentalController = require("../controllers/rentalController");
@@ -7,7 +6,8 @@ const verifyToken = require("../middlewares/authMiddleware"); // Asegúrate de t
 // Rutas protegidas
 router.use(verifyToken); // Esto aplicará el middleware a todas las rutas siguientes
 
-router.get("/:id", rentalController.getAllByUserId);
+router.get("/user/:id", rentalController.getAllByUserId);
+router.get("/motorcycle/:motorcycleId", rentalController.getAllByMotorcycleId);
 router.get("/rental/:id", rentalController.getById);
 router.post("/", rentalController.create);
 router.put("/:id", rentalController.update);
