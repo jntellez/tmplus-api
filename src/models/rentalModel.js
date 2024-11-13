@@ -9,7 +9,7 @@ const rentalModel = {
   },
   getAllByMotorcycleId: async (motorcycleId) => {
     const [rows] = await db.query(
-      "SELECT * FROM rentals WHERE motorcycle_id = ?",
+      "SELECT * FROM rentals WHERE motorcycle_id = ? AND status = 'confirmed'",
       [motorcycleId]
     );
     return rows;
