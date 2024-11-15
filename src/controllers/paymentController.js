@@ -25,7 +25,7 @@ const createPayment = async (req, res) => {
       },
       additional_info: "Comisión incluida", // Información adicional para la transacción
       metadata: {
-        rentalId: rentalId.toString(),
+        rentalId: rentalId,
       },
       marketplace_fee: commission,
       notification_url:
@@ -39,9 +39,7 @@ const createPayment = async (req, res) => {
     res.json({
       initial_point: response.init_point,
       sandbox_initial_point: response.sandbox_init_point,
-      rentalId: response.external_reference,
-      marketplace_fee: response.marketplace_fee,
-      id: response.id,
+      rentalId: response.metadata.rentalId,
     });
   } catch (error) {
     console.error("Error al crear el pago", error.response || error.message);
