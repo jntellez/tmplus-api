@@ -28,7 +28,7 @@ const createPayment = async (req, res) => {
         rentalId: rentalId,
       },
       marketplace_fee: commission,
-      notification_url: `https://d906-2806-266-48b-30-9dc-b013-7a1c-a965.ngrok-free.app/api/payments/webhook?rentalId=${rentalId}`,
+      notification_url: `https://bvnlx2lb-5000.usw3.devtunnels.ms/api/payments/webhook?rentalId=${rentalId}`,
     };
 
     // Crear la preferencia
@@ -72,8 +72,6 @@ const webhook = async (req, res) => {
       rentalId,
     ]);
 
-    console.log(`Renta con ID ${rentalId} actualizada a confirmed`);
-
     // Responder al webhook
     return res.status(200).send("OK");
   } catch (error) {
@@ -82,60 +80,41 @@ const webhook = async (req, res) => {
   }
 };
 
-const add = async (id) => {
-  console.log(id);
-  setTimeout(async () => {
-    try {
-      const payment = await paymentOb.get({ id });
-      console.log(payment);
-      // Procesa el pago aquí
-    } catch (error) {
-      console.error("Error al procesar el webhook después del retraso:", error);
-    }
-  }, 5000); // Espera de 10 segundos
+// // Función para procesar el webhook
+// const webhook = async (req, res) => {
+//   const id = await req.query["data.id"];
 
-  //   console.log(payment);
+//   try {
+//     const payment = await paymentOb.get({ id });
+//     if (payment.type === "payment") {
+//       console.log(payment);
+//       const { rentalId } = payment.metadata;
+//       if (!rentalId) {
+//         return res.status(400).send("rentalId no proporcionado");
+//       }
 
-  //   if (paymentData.type === "payment") {
-  //     const paymentId = paymentData.data.id;
-  //     try {
-  //       // Obtener el estado del pago
-  //       const payment = await paymentOb.get({ id: paymentId });
-  //       console.log(payment);
-  //       const paymentStatus = payment.body.status;
-  //       const rentalId = payment.body.external_reference; // Recupera el rentalId
-  //       // Consultar la renta con el rentalId en la base de datos
-  //       const [rentalResult] = await db
-  //         .promise()
-  //         .query("SELECT * FROM rentals WHERE id = ?", [rentalId]);
-  //       if (rentalResult.length) {
-  //         // Determina el nuevo estado de la renta según el estado del pago
-  //         let newStatus;
-  //         if (paymentStatus === "approved") {
-  //           newStatus = "confirmed";
-  //         } else if (paymentStatus === "rejected") {
-  //           newStatus = "cancelled";
-  //         } else if (paymentStatus === "pending") {
-  //           newStatus = "pending";
-  //         }
-  //         // Actualizar el estado de la renta en la base de datos
-  //         await db
-  //           .promise()
-  //           .query("UPDATE rentals SET status = ? WHERE id = ?", [
-  //             newStatus,
-  //             rentalId,
-  //           ]);
-  //         res.status(200).send("Pago procesado correctamente.");
-  //       } else {
-  //         res.status(404).send("Renta no encontrada.");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error al procesar el webhook: ", error);
-  //       res.status(500).send("Error al procesar la notificación de pago.");
-  //     }
-  //   } else {
-  //     res.status(400).send("Notificación no válida.");
-  //   }
-};
+//       // Buscar la renta en la base de datos usando el rentalId
+//       const rental = await db.query("SELECT * FROM rentals WHERE id = ?", [
+//         rentalId,
+//       ]);
+
+//       if (!rental || rental.length === 0) {
+//         return res.status(404).send("Renta no encontrada");
+//       }
+
+//       // Actualizar el estado de la renta a 'confirmed'
+//       await db.query("UPDATE rentals SET status = ? WHERE id = ?", [
+//         "confirmed",
+//         rentalId,
+//       ]);
+//     }
+
+//     // Responder al webhook
+//     return res.status(200).send("OK");
+//   } catch (error) {
+//     console.error("Error al procesar la notificación del webhook:", error);
+//     return res.status(500).send("Error al procesar la notificación");
+//   }
+// };
 
 module.exports = { createPayment, webhook };
