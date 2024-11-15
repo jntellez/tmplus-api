@@ -28,8 +28,7 @@ const createPayment = async (req, res) => {
         rentalId: rentalId,
       },
       marketplace_fee: commission,
-      notification_url:
-        "https://d906-2806-266-48b-30-9dc-b013-7a1c-a965.ngrok-free.app/api/payments/webhook",
+      notification_url: `https://d906-2806-266-48b-30-9dc-b013-7a1c-a965.ngrok-free.app/api/payments/webhook?rentalId=${rentalId}`,
     };
 
     // Crear la preferencia
@@ -51,19 +50,36 @@ const createPayment = async (req, res) => {
 
 // Función para procesar el webhook
 const webhook = async (req, res) => {
-  //   const paymentId = req.body.data.id;
-  //   console.log(paymentId);
-  //   console.log(req.body);
-  const payment = req.query;
-  const id = payment["data.id"];
-  await add(id);
-  //   const eventType = req.body.type; // Tipo de evento del webhook
+  const rentalId = req.query.rentalId; // Obtener el rentalId de la URL del webhook
 
-  //   if (eventType === "payment") {
-  //     //await add(paymentId);
-  //   }
+  if (!rentalId) {
+    return res.status(400).send("rentalId no proporcionado");
+  }
 
-  return res.status(200).send("OK");
+  try {
+    // Buscar la renta en la base de datos usando el rentalId
+    const rental = await db.query("SELECT * FROM rentals WHERE id = ?", [
+      rentalId,
+    ]);
+
+    if (!rental || rental.length === 0) {
+      return res.status(404).send("Renta no encontrada");
+    }
+
+    // Actualizar el estado de la renta a 'confirmed'
+    await db.query("UPDATE rentals SET status = ? WHERE id = ?", [
+      "confirmed",
+      rentalId,
+    ]);
+
+    console.log(`Renta con ID ${rentalId} actualizada a confirmed`);
+
+    // Responder al webhook
+    return res.status(200).send("OK");
+  } catch (error) {
+    console.error("Error al procesar la notificación del webhook:", error);
+    return res.status(500).send("Error al procesar la notificación");
+  }
 };
 
 const add = async (id) => {
