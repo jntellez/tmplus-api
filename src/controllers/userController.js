@@ -97,14 +97,14 @@ const userController = {
       const hashedPassword = await bcrypt.hash(newPassword, 10);
 
       // Actualizar la contraseña en la base de datos
-      const isUpdated = await userModel.updatePassword(id, hashedPassword);
-      if (!isUpdated) {
+      const updatedUser = await userModel.updatePassword(id, hashedPassword);
+      if (!updatedUser) {
         return res
           .status(500)
           .json({ message: "Error al actualizar la contraseña" });
       }
 
-      res.json({ message: "Contraseña actualizada exitosamente" });
+      res.json(updatedUser);
     } catch (err) {
       res.status(500).json({
         message: "Error al actualizar la contraseña",
