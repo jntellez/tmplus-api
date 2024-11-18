@@ -9,5 +9,6 @@ router.get("/:id", verifyToken, userController.getById); // Requiere autenticaci
 router.post("/", userController.create); // No requiere autenticación para registrar un nuevo usuario
 router.put("/:id", verifyToken, userController.update); // Requiere autenticación para actualizar el usuario
 router.delete("/:id", verifyToken, userController.delete); // Requiere autenticación para eliminar usuarios
+router.put("/:id/password", verifyToken, userController.updatePassword);
 
 module.exports = router;

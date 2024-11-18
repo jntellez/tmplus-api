@@ -8,7 +8,6 @@ const client = new MercadoPagoConfig({
 
 // Crear una instancia de Preference
 const preference = new Preference(client);
-const paymentOb = new Payment(client);
 
 // Función para crear el pago
 const createPayment = async (req, res) => {
