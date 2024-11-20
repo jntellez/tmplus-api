@@ -38,6 +38,11 @@ const motorcycleController = {
     const newMotorcycle = req.body;
     try {
       const createdMotorcycle = await motorcycleModel.create(newMotorcycle);
+
+      // if (createdMotorcycle) {
+      //   axios.post(`${process.env.URL}/api/${createdMotorcycle.id}/images`);
+      // }
+
       res.status(201).json(createdMotorcycle);
     } catch (err) {
       res
@@ -137,8 +142,9 @@ const motorcycleController = {
       // Mapea cada imagen para devolver la URL completa
       const imagesWithUrls = images.map((image) => ({
         ...image,
-        url: `http://localhost:5000${image.image_url}`, // Usa image.image_url directamente
+        url: `${process.env.URL}${image.image_url}`, // Usa image.image_url directamente
       }));
+      console.log(imagesWithUrls);
 
       res.json(imagesWithUrls);
     } catch (err) {
@@ -187,11 +193,9 @@ const motorcycleController = {
             .status(200)
             .json({ message: "Imagen eliminada correctamente" });
         } else {
-          return res
-            .status(500)
-            .json({
-              message: "Error al eliminar la imagen de la base de datos",
-            });
+          return res.status(500).json({
+            message: "Error al eliminar la imagen de la base de datos",
+          });
         }
       });
     } catch (err) {

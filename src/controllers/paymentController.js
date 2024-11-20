@@ -1,19 +1,21 @@
-const { MercadoPagoConfig, Preference, Payment } = require("mercadopago");
+const { MercadoPagoConfig, Preference } = require("mercadopago");
 const db = require("../config/db");
-
-// Crear una instancia de MercadoPagoConfig con el access token
-const client = new MercadoPagoConfig({
-  accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
-});
-
-// Crear una instancia de Preference
-const preference = new Preference(client);
+const { getById } = require("../models/userModel");
 
 // Función para crear el pago
 const createPayment = async (req, res) => {
-  const { items, buyer, commission, rentalId } = req.body;
+  const { items, buyer, commission, rentalId, ownerId } = req.body;
 
   try {
+    const { mp_access_token } = await getById(ownerId);
+
+    // Crear una instancia de MercadoPagoConfig con el access token
+    const client = new MercadoPagoConfig({
+      accessToken: mp_access_token,
+    });
+    // Crear una instancia de Preference
+    const preference = new Preference(client);
+
     // Crear la preferencia de pago utilizando la nueva forma del SDK
     const preferenceBody = {
       items, // Los detalles de los productos (motorcicletas, alquileres, etc.)
@@ -27,7 +29,7 @@ const createPayment = async (req, res) => {
         rentalId: rentalId,
       },
       marketplace_fee: commission,
-      notification_url: `https://bvnlx2lb-5000.usw3.devtunnels.ms/api/payments/webhook?rentalId=${rentalId}`,
+      notification_url: `${process.env.URL}/api/payments/webhook?rentalId=${rentalId}`,
     };
 
     // Crear la preferencia
