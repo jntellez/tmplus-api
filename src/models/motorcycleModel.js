@@ -31,12 +31,21 @@ const motorcycleModel = {
   },
   getByUserId: async (userId) => {
     const query = `
-        SELECT * 
-        FROM motorcycles
-        WHERE user_id = ?;
-      `;
-    const [rows] = await db.execute(query, [userId]);
-    return rows;
+      SELECT * 
+      FROM motorcycles
+      WHERE user_id = ?;
+    `;
+    const [motorcycles] = await db.execute(query, [userId]);
+
+    // Obtener las imágenes de cada motocicleta y asociarlas
+    for (let motorcycle of motorcycles) {
+      const images = await motorcycleModel.getImagesByMotorcycleId(
+        motorcycle.id
+      );
+      motorcycle.images = images.map((image) => image.image_url); // Agregar las imágenes al objeto motocicleta
+    }
+
+    return motorcycles;
   },
   getById: async (id) => {
     const [motorcycles] = await db.query(
