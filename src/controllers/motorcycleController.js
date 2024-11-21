@@ -72,7 +72,7 @@ const motorcycleController = {
       if (!motorcycle) {
         return res.status(404).json({ message: "Moto no encontrada" });
       }
-      res.status(204).send();
+      res.status(204).send({ id });
     } catch (err) {
       res
         .status(500)
@@ -144,7 +144,6 @@ const motorcycleController = {
         ...image,
         url: `${process.env.URL}${image.image_url}`, // Usa image.image_url directamente
       }));
-      console.log(imagesWithUrls);
 
       res.json(imagesWithUrls);
     } catch (err) {
