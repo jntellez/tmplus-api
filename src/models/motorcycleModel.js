@@ -29,7 +29,15 @@ const motorcycleModel = {
       totalPages: Math.ceil(total / limit), // Calcula el número total de páginas
     };
   },
-
+  getByUserId: async (userId) => {
+    const query = `
+        SELECT * 
+        FROM motorcycles
+        WHERE user_id = ?;
+      `;
+    const [rows] = await db.execute(query, [userId]);
+    return rows;
+  },
   getById: async (id) => {
     const [motorcycles] = await db.query(
       "SELECT * FROM motorcycles WHERE id = ?",
