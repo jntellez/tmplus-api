@@ -20,6 +20,33 @@ const motorcycleController = {
         .json({ message: "Error al obtener motos", error: err.message });
     }
   },
+  getByUserId: async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+      // Validar que el parámetro sea numérico
+      if (isNaN(userId)) {
+        return res
+          .status(400)
+          .json({ message: "El ID de usuario debe ser un número válido" });
+      }
+
+      // Obtener las motocicletas del usuario
+      const motorcycles = await motorcycleModel.getByUserId(userId);
+
+      // Verificar si no hay motocicletas
+      if (motorcycles.length === 0) {
+        return res.status(404).json({
+          message: "No se encontraron motocicletas para este usuario",
+        });
+      }
+
+      res.status(200).json(motorcycles);
+    } catch (error) {
+      console.error("Error al obtener las motocicletas:", error);
+      res.status(500).json({ message: "Error interno del servidor" });
+    }
+  },
   getById: async (req, res) => {
     const { id } = req.params;
     try {
@@ -38,6 +65,11 @@ const motorcycleController = {
     const newMotorcycle = req.body;
     try {
       const createdMotorcycle = await motorcycleModel.create(newMotorcycle);
+
+      // if (createdMotorcycle) {
+      //   axios.post(`${process.env.URL}/api/${createdMotorcycle.id}/images`);
+      // }
+
       res.status(201).json(createdMotorcycle);
     } catch (err) {
       res
@@ -67,7 +99,7 @@ const motorcycleController = {
       if (!motorcycle) {
         return res.status(404).json({ message: "Moto no encontrada" });
       }
-      res.status(204).send();
+      res.status(204).send({ id });
     } catch (err) {
       res
         .status(500)
@@ -137,7 +169,7 @@ const motorcycleController = {
       // Mapea cada imagen para devolver la URL completa
       const imagesWithUrls = images.map((image) => ({
         ...image,
-        url: `http://localhost:5000${image.image_url}`, // Usa image.image_url directamente
+        url: `${process.env.URL}${image.image_url}`, // Usa image.image_url directamente
       }));
 
       res.json(imagesWithUrls);
@@ -187,11 +219,9 @@ const motorcycleController = {
             .status(200)
             .json({ message: "Imagen eliminada correctamente" });
         } else {
-          return res
-            .status(500)
-            .json({
-              message: "Error al eliminar la imagen de la base de datos",
-            });
+          return res.status(500).json({
+            message: "Error al eliminar la imagen de la base de datos",
+          });
         }
       });
     } catch (err) {

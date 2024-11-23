@@ -15,6 +15,7 @@ const userController = {
   },
   getById: async (req, res) => {
     const { id } = req.params;
+
     try {
       const user = await userModel.getById(id);
       if (!user) {

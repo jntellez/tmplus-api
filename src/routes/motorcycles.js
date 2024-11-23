@@ -26,6 +26,7 @@ router.delete(
 // Rutas protegidas
 router.use(verifyToken);
 router.post("/", motorcycleController.create);
+router.get("/user/:userId", motorcycleController.getByUserId);
 router.put("/:id", motorcycleController.update);
 router.delete("/:id", motorcycleController.delete);
 router.get("/:id/rental-price", motorcycleController.getRentalPrice);
