@@ -1,13 +1,15 @@
 const { MercadoPagoConfig, Preference } = require("mercadopago");
 const db = require("../config/db");
-const { getById } = require("../models/userModel");
+const { getById: getUserById } = require("../models/userModel");
+const { getById: getMotorcycleById } = require("../models/motorcycleModel");
+const { create: createDelivery } = require("../models/deliveryModel");
 
 // Función para crear el pago
 const createPayment = async (req, res) => {
   const { items, buyer, commission, rentalId, ownerId } = req.body;
 
   try {
-    const { mp_access_token } = await getById(ownerId);
+    const { mp_access_token } = await getUserById(ownerId);
 
     // Crear una instancia de MercadoPagoConfig con el access token
     const client = new MercadoPagoConfig({
@@ -78,6 +80,30 @@ const webhook = async (req, res) => {
   } catch (error) {
     console.error("Error al procesar la notificación del webhook:", error);
     return res.status(500).send("Error al procesar la notificación");
+  }
+};
+
+const addDelivery = async (rental) => {
+  try {
+    // Extraer los datos relevantes
+    const customer = await getUserById(rental.user_id);
+    const motorcycle = await getMotorcycleById(rental.motorcycle_id);
+    const owner = await getUserById(motorcycle.user_id);
+
+    const delivery = await createDelivery({
+      rental_id: rental.id,
+      delivery_date: rental.start_date,
+      delivery_location: customer.address,
+      delivery_instructions: rental.delivery_instructions,
+      status: rental.status,
+      id_owner: owner.id,
+      id_customer: customer.id,
+    });
+
+    return delivery;
+  } catch (error) {
+    console.error("Error retrieving rental details:", error);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 

@@ -8,7 +8,8 @@ const rentalRoutes = require("./routes/rentals");
 const ratingRoutes = require("./routes/ratings");
 const authRoutes = require("./routes/authRoutes");
 const verifyToken = require("./middlewares/authMiddleware");
-const paymentRoutes = require("./routes/paymentRoutes"); // Ruta para pagos
+const paymentRoutes = require("./routes/paymentRoutes");
+const deliveryRoutes = require("./routes/delivery");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -31,7 +32,8 @@ app.use("/api/motorcycles", motorcycleRoutes);
 app.use("/api/rentals", rentalRoutes);
 app.use("/api/ratings", ratingRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/payments", paymentRoutes); // Nueva ruta para pagos
+app.use("/api/payments", paymentRoutes);
+app.use("/api/deliveries", deliveryRoutes);
 
 // Ruta protegida de ejemplo
 app.get("/api/protected", verifyToken, (req, res) => {
