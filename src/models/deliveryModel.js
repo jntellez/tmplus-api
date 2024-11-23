@@ -36,20 +36,16 @@ const deliveryModel = {
   },
 
   // Actualizar una entrega
-  update: async (id, updates) => {
-    const query = `
-      UPDATE deliveries
-      SET delivery_date = ?, delivery_location = ?, delivery_instructions = ?, status = ?
-      WHERE id = ?;
-    `;
-    const [result] = await db.execute(query, [
-      updates.delivery_date,
-      updates.delivery_location,
-      updates.delivery_instructions,
-      updates.status,
-      id,
-    ]);
-    return result.affectedRows > 0;
+  update: async (id, delivery) => {
+    const keys = Object.keys(delivery)
+      .map((key) => `${key} = ?`)
+      .join(", ");
+    const values = Object.values(delivery);
+
+    const query = `UPDATE deliveries SET ${keys} WHERE id = ?`;
+
+    await db.query(query, [...values, id]);
+    return await deliveryModel.getById(id);
   },
 
   // Eliminar una entrega
