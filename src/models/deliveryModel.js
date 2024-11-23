@@ -5,11 +5,12 @@ const deliveryModel = {
   create: async (delivery) => {
     const query = `
       INSERT INTO deliveries (
-        rental_id, delivery_date, delivery_location, delivery_instructions, status, id_owner, id_customer
-      ) VALUES (?, ?, ?, ?, ?, ?, ?);
+        rental_id, motorcycle_id, delivery_date, delivery_location, delivery_instructions, status, id_owner, id_customer
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
     `;
     const [result] = await db.execute(query, [
       delivery.rental_id,
+      delivery.motorcycle_id,
       delivery.delivery_date,
       delivery.delivery_location,
       delivery.delivery_instructions,

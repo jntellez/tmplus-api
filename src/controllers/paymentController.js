@@ -61,11 +61,13 @@ const webhook = async (req, res) => {
 
   try {
     // Buscar la renta en la base de datos usando el rentalId
-    const rental = await db.query("SELECT * FROM rentals WHERE id = ?", [
+    const response = await db.query("SELECT * FROM rentals WHERE id = ?", [
       rentalId,
     ]);
 
-    if (!rental || rental.length === 0) {
+    const rental = response[0][0];
+
+    if (!rental) {
       return res.status(404).send("Renta no encontrada");
     }
 
@@ -74,6 +76,8 @@ const webhook = async (req, res) => {
       "confirmed",
       rentalId,
     ]);
+
+    await addDelivery(rental);
 
     // Responder al webhook
     return res.status(200).send("OK");
@@ -90,20 +94,22 @@ const addDelivery = async (rental) => {
     const motorcycle = await getMotorcycleById(rental.motorcycle_id);
     const owner = await getUserById(motorcycle.user_id);
 
-    const delivery = await createDelivery({
+    const deliveryData = {
       rental_id: rental.id,
+      motorcycle_id: motorcycle.id,
       delivery_date: rental.start_date,
-      delivery_location: customer.address,
-      delivery_instructions: rental.delivery_instructions,
-      status: rental.status,
+      delivery_location: owner.address,
+      delivery_instructions: motorcycle.delivery_instructions,
+      status: "confirmed",
       id_owner: owner.id,
       id_customer: customer.id,
-    });
+    };
+
+    const delivery = await createDelivery(deliveryData);
 
     return delivery;
   } catch (error) {
     console.error("Error retrieving rental details:", error);
-    return res.status(500).json({ message: "Server error" });
   }
 };
 
