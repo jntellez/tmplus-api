@@ -77,12 +77,6 @@ const ratingController = {
     try {
       const ratings = await ratingModel.getRatingsByMotorcycle(motorcycleId);
 
-      if (ratings.length === 0) {
-        return res
-          .status(404)
-          .json({ message: "No ratings found for this motorcycle" });
-      }
-
       res.status(200).json(ratings);
     } catch (error) {
       console.error("Error fetching ratings for motorcycle:", error);
@@ -94,12 +88,6 @@ const ratingController = {
 
     try {
       const ratings = await ratingModel.getRatingsByUser(userId);
-
-      if (ratings.length === 0) {
-        return res
-          .status(404)
-          .json({ message: "No ratings found for this user" });
-      }
 
       res.status(200).json(ratings);
     } catch (error) {
