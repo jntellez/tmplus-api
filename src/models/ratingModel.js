@@ -44,6 +44,17 @@ const ratingModel = {
       throw new Error("Error fetching ratings for user");
     }
   },
+  getRatingByUserAndMotorcycle: async (userId, motorcycleId) => {
+    try {
+      const [rows] = await db.query(
+        "SELECT * FROM ratings WHERE user_id = ? AND motorcycle_id = ?",
+        [userId, motorcycleId]
+      );
+      return rows[0]; // Devolver la primera fila si existe
+    } catch (error) {
+      throw new Error("Error retrieving rating: " + error.message);
+    }
+  },
 };
 
 module.exports = ratingModel;

@@ -15,6 +15,10 @@ router.get(
 // Rutas protegidas
 router.use(verifyToken); // Esto aplicará el middleware a todas las rutas siguientes
 
+router.get(
+  "/user/:userId/motorcycle/:motorcycleId",
+  ratingController.getRatingByUserAndMotorcycle
+);
 router.get("/user/:userId", ratingController.getRatingsByUser);
 router.post("/", ratingController.create);
 router.put("/:id", ratingController.update);
