@@ -7,12 +7,10 @@ const ratingController = {
       const ratings = await ratingModel.getAll();
       res.json(ratings);
     } catch (err) {
-      res
-        .status(500)
-        .json({
-          message: "Error al obtener calificaciones",
-          error: err.message,
-        });
+      res.status(500).json({
+        message: "Error al obtener calificaciones",
+        error: err.message,
+      });
     }
   },
   getById: async (req, res) => {
@@ -24,12 +22,10 @@ const ratingController = {
       }
       res.json(rating);
     } catch (err) {
-      res
-        .status(500)
-        .json({
-          message: "Error al obtener la calificación",
-          error: err.message,
-        });
+      res.status(500).json({
+        message: "Error al obtener la calificación",
+        error: err.message,
+      });
     }
   },
   create: async (req, res) => {
@@ -38,12 +34,10 @@ const ratingController = {
       const createdRating = await ratingModel.create(newRating);
       res.status(201).json(createdRating);
     } catch (err) {
-      res
-        .status(400)
-        .json({
-          message: "Error al crear la calificación",
-          error: err.message,
-        });
+      res.status(400).json({
+        message: "Error al crear la calificación",
+        error: err.message,
+      });
     }
   },
   update: async (req, res) => {
@@ -56,12 +50,10 @@ const ratingController = {
       }
       res.json(rating);
     } catch (err) {
-      res
-        .status(400)
-        .json({
-          message: "Error al actualizar la calificación",
-          error: err.message,
-        });
+      res.status(400).json({
+        message: "Error al actualizar la calificación",
+        error: err.message,
+      });
     }
   },
   delete: async (req, res) => {
@@ -73,12 +65,46 @@ const ratingController = {
       }
       res.status(204).send();
     } catch (err) {
-      res
-        .status(500)
-        .json({
-          message: "Error al eliminar la calificación",
-          error: err.message,
-        });
+      res.status(500).json({
+        message: "Error al eliminar la calificación",
+        error: err.message,
+      });
+    }
+  },
+  getRatingsByMotorcycle: async (req, res) => {
+    const { motorcycleId } = req.params;
+
+    try {
+      const ratings = await ratingModel.getRatingsByMotorcycle(motorcycleId);
+
+      if (ratings.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No ratings found for this motorcycle" });
+      }
+
+      res.status(200).json(ratings);
+    } catch (error) {
+      console.error("Error fetching ratings for motorcycle:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  },
+  getRatingsByUser: async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+      const ratings = await ratingModel.getRatingsByUser(userId);
+
+      if (ratings.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No ratings found for this user" });
+      }
+
+      res.status(200).json(ratings);
+    } catch (error) {
+      console.error("Error fetching ratings for user:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
   },
 };
