@@ -95,6 +95,26 @@ const ratingController = {
       res.status(500).json({ message: "Internal server error" });
     }
   },
+  getRatingByUserAndMotorcycle: async (req, res) => {
+    const { userId, motorcycleId } = req.params;
+
+    try {
+      const rating = await ratingModel.getRatingByUserAndMotorcycle(
+        userId,
+        motorcycleId
+      );
+      if (rating) {
+        res.status(200).json(rating);
+      } else {
+        res.status(404).json({ message: "Calificación no encontrada" });
+      }
+    } catch (error) {
+      console.error("Error fetching rating:", error);
+      res
+        .status(500)
+        .json({ message: "Ocurrió un error al obtener la calificación" });
+    }
+  },
 };
 
 module.exports = ratingController;
